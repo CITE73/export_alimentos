@@ -463,7 +463,7 @@ function fmtCap(n) { return Number(n).toLocaleString('es-PE', {maximumFractionDi
 // sigue siendo el tiempo de trabajo del operario por batch, tal como en el Excel de producción — es independiente de qué tan rápido sea el equipo.
 const CAP_TRI = 80, CAP_COL = 100, CAP_TOS = 157.6 / 7.50, CAP_MOL = 80, CAP_ENV = 500;   // kg/h o bolsas/h
 const ETAPAS = [
-  {id:'recep', n:'1. Recepción de materia prima',  sub:'Balanza · manual',           merma:0,     base:'perg', tam:KG_BATCH,           minMaq:0,                    minHom:12,   kw:0,           colores:'verde'},
+  {id:'recep', n:'1. Recepción de materia prima',  sub:'Balanza · manual',           merma:0,     base:'perg', tam:KG_BATCH,           minMaq:0,                    minHom:4,   kw:0,           colores:'verde'},
   {id:'tri',   n:'2. Trillado y clasificado',      sub:`Trilladora · ${fmtCap(CAP_TRI)} kg/h`,    merma:0.20,  base:'perg', tam:KG_BATCH,           minMaq:KG_BATCH/CAP_TRI*60,           minHom:4,    kw:3*HP_KW,     colores:'verde'},
   {id:'col',   n:'3. Clasificado por color',       sub:`Ojo óptico · ${fmtCap(CAP_COL)} kg/h`,    merma:0.015, base:'perg', tam:KG_BATCH,           minMaq:KG_BATCH/CAP_COL*60,           minHom:6,    kw:8.7,         colores:'verde'},
   {id:'tos',   n:'4. Tostado y control calidad',   sub:`Tostadora · ${fmtCap(CAP_TOS)} kg/h efectivo (incl. calentamiento) · gas`, merma:0.17, base:'in', tam:KG_TOSTADORA_BATCH, minMaq:KG_TOSTADORA_BATCH/CAP_TOS*60, minHom:10,  kw:3,           colores:'ambar'},
