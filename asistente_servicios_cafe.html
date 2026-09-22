@@ -349,7 +349,7 @@ const STORAGE_KEY = CFG.STORAGE_KEY;
 // Motor validado contra el lote de 200 kg del Excel (capital ≈ S/895.70 vs S/898.88, 0.35% por redondeo de kg del Excel).
 // ══════════════════════════════════════════
 const KG_BATCH = 13, KG_TOSTADORA_BATCH = 10, HORAS_JORNADA = 8, HP_KW = 0.7457;
-const CAP_TRI = 80, CAP_COL = 100, CAP_TOS = 157.6 / 7.50, CAP_MOL = 80, CAP_ENV = 500;   // kg/h o bolsas/h — misma ficha técnica que producción
+const CAP_TRI = 80, CAP_COL = 100, CAP_TOS = 157.6 / 7.50, CAP_MOL = 80, CAP_ENV = 100;   // kg/h o bolsas/h — misma ficha técnica que producción
 const TARIFA_KWH = 0.6686, GAS_KG_X_KG_TOSTADO = 0.02, GAS_SOLES_X_KG = 230 / 45;
 const TARIFA_MOD = 11.98;          // S/ por hora-hombre — en servicios SÍ se cobra la mano de obra directa (en producción va en el fijo mensual)
 const EPP_X_PERSONA_DIA = 2.2, PERSONAS_EPP = 2;
@@ -358,7 +358,7 @@ const VIDA_UTIL_ANIOS = 10, MANT_ANUAL_PCT = 0.02, HORAS_MES_DEPMANT = 30;   // 
 function fmtCap(n) { return Number(n).toLocaleString('es-PE', { maximumFractionDigits: 1 }); }
 function dm(valor) { return [valor / VIDA_UTIL_ANIOS / 12 / HORAS_MES_DEPMANT, valor * MANT_ANUAL_PCT / 12 / HORAS_MES_DEPMANT]; }
 const [DEP_TRI, MANT_TRI] = dm(7000), [DEP_COL, MANT_COL] = dm(57000), [DEP_TOS, MANT_TOS] = dm(95000), [DEP_MOL, MANT_MOL] = dm(3000),
-      [DEP_ENV, MANT_ENV] = dm(114000), [DEP_MESA, MANT_MESA] = dm(4800), [DEP_LAB, MANT_LAB] = dm(12000), [DEP_MOV, MANT_MOV] = dm(76000);
+      [DEP_ENV, MANT_ENV] = dm(2280), [DEP_MESA, MANT_MESA] = dm(4800), [DEP_LAB, MANT_LAB] = dm(12000), [DEP_MOV, MANT_MOV] = dm(76000);
 
 // Etapas del flujo físico (mismas 8 que producción, mismas capacidades y mermas — ver /mnt/user-data/outputs/asistente_cafe_costos.html).
 // dep_h / mant_h = S/ por HORA de ese equipo (se multiplican por los DÍAS del servicio, no por horas de la etapa — así lo hace el Excel).
