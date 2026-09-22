@@ -365,7 +365,7 @@ const [DEP_TRI, MANT_TRI] = dm(7000), [DEP_COL, MANT_COL] = dm(57000), [DEP_TOS,
 // Mesa inox, Laboratorio y Movilidad se asignan a la etapa donde se usan físicamente (envasado, recepción/control de calidad, almacenamiento):
 // el empresario confirmó que lo que importa es que cada equipo deprecie y se mantenga, no en qué fila exacta del Excel caiga.
 const ETAPAS_SRV = [
-  { id: 'recep', n: '1. Recepción de materia prima', sub: 'Balanza · control de calidad', base: 'perg', tam: KG_BATCH, minMaq: 0, minHom: 12, kw: 0, dep_h: DEP_LAB, mant_h: MANT_LAB, merma: 0 },
+  { id: 'recep', n: '1. Recepción de materia prima', sub: 'Balanza · control de calidad', base: 'perg', tam: KG_BATCH, minMaq: 0, minHom: 4, kw: 0, dep_h: DEP_LAB, mant_h: MANT_LAB, merma: 0 },
   { id: 'tri',   n: '2. Trillado y clasificado',      sub: `Trilladora · ${fmtCap(CAP_TRI)} kg/h`, base: 'perg', tam: KG_BATCH, minMaq: KG_BATCH / CAP_TRI * 60, minHom: 4, kw: 3 * HP_KW, dep_h: DEP_TRI, mant_h: MANT_TRI, merma: 0.20 },
   { id: 'col',   n: '3. Clasificado por color',       sub: `Ojo óptico · ${fmtCap(CAP_COL)} kg/h`, base: 'perg', tam: KG_BATCH, minMaq: KG_BATCH / CAP_COL * 60, minHom: 6, kw: 8.7, dep_h: DEP_COL, mant_h: MANT_COL, merma: 0.015 },
   { id: 'tos',   n: '4. Tostado y control calidad',   sub: `Tostadora · ${fmtCap(CAP_TOS)} kg/h efectivo · gas`, base: 'in', tam: KG_TOSTADORA_BATCH, minMaq: KG_TOSTADORA_BATCH / CAP_TOS * 60, minHom: 10, kw: 3, dep_h: DEP_TOS, mant_h: MANT_TOS, merma: 0.17, gas: true },
