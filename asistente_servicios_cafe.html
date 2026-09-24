@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asistente de Planta · Café</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cafe:#3B1F0A;
+  --cafe-mid:#6B3A1F;
+  --cafe-lt:#A0622A;
+  --crema:#FDF6EC;
+  --crema2:#F5ECD8;
+  --verde:#1B5E20;
+  --verde-lt:#E8F5E9;
+  --ambar:#E65100;
+  --ambar-lt:#FFF3E0;
+  --rojo:#B71C1C;
+  --rojo-lt:#FFEBEE;
+  --azul:#0D47A1;
+  --azul-lt:#E3F2FD;
+  --gris:#F0EBE3;
+  --txt:#2C1A0E;
+  --txt-s:#7A6652;
+  --borde:#DDD0C0;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--gris);color:var(--txt);min-height:100vh}
+
+/* HEADER */
+header{background:var(--cafe);padding:14px 18px 10px}
+.h-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px}
+.btn-dashboard{background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.4);border-radius:6px;padding:5px 11px;font-size:0.78rem;font-weight:600;text-decoration:none;white-space:nowrap}
+.btn-dashboard:hover{background:rgba(255,255,255,0.28)}  
+.h-empresa{font-family:'DM Serif Display',serif;color:#C8860A;font-size:16px;line-height:1.2}
+.h-sub{margin-top:3px}
+.h-sub a{color:var(--crema);font-size:11px;opacity:.8;text-decoration:none}
+.h-sub a:hover{opacity:1;text-decoration:underline}
+.h-badge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:10px;padding:3px 10px;border-radius:20px;font-weight:600;white-space:nowrap}
+.h-title{text-align:center;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.15)}
+.h-title span{font-family:'DM Serif Display',serif;font-size:19px;color:#fff;letter-spacing:.05em}
+
+/* SYNC BAR */
+.sync-bar{background:var(--cafe-mid);color:var(--crema);font-size:11px;padding:6px 16px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.btn-sync{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:6px;padding:4px 12px;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
+.btn-sync:hover{background:rgba(255,255,255,.25)}
+
+/* LOTE BADGE */
+.lote-bar{background:var(--crema2);border-bottom:1px solid var(--borde);padding:7px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.lote-id{font-family:'DM Serif Display',serif;color:var(--cafe);font-size:14px;font-weight:400}
+.lote-fecha{font-size:11px;color:var(--txt-s)}
+
+/* WRAP */
+.wrap{padding:14px 16px;max-width:700px;margin:0 auto}
+
+/* INPUTS GLOBALES */
+.inputs-card{background:#fff;border-radius:12px;border:1px solid var(--borde);padding:14px;margin-bottom:12px}
+.sec-label{font-size:10px;font-weight:600;color:var(--txt-s);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.inputs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.field{display:flex;flex-direction:column;gap:3px}
+.field label{font-size:11px;color:var(--txt-s);font-weight:500}
+.field input,.field select{border:1px solid var(--borde);border-radius:7px;padding:8px 10px;font-size:14px;font-family:'DM Sans',sans-serif;background:var(--crema);color:var(--txt);font-weight:500}
+.field input:focus,.field select:focus{outline:none;border-color:var(--cafe-mid);background:#fff}
+
+/* TABS */
+.tabs{display:flex;gap:4px;margin-bottom:12px;background:#fff;border-radius:10px;border:1px solid var(--borde);padding:4px}
+.tab{flex:1;border:none;border-radius:7px;padding:9px 8px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;background:transparent;color:var(--txt-s);transition:all .2s;text-align:center}
+.tab.active{background:var(--cafe);color:#C8860A}
+.tab-pane{display:none}
+.tab-pane.active{display:block}
+
+/* KPI CARDS */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:12px}
+.kpi{background:#fff;border-radius:10px;padding:12px 14px;border:1px solid var(--borde)}
+.kpi-l{font-size:10px;color:var(--txt-s);margin-bottom:4px;font-weight:500;line-height:1.3}
+.kpi-v{font-size:22px;font-weight:600;color:var(--cafe);line-height:1}
+.kpi-u{font-size:10px;color:var(--txt-s);margin-top:3px}
+.kpi.hl{border-color:var(--cafe-mid);background:var(--crema)}
+.kpi.ok{border-color:var(--verde);background:var(--verde-lt)}
+.kpi.warn{border-color:var(--ambar);background:var(--ambar-lt)}
+.kpi.info{border-color:var(--azul);background:var(--azul-lt)}
+.kpi-v.verde{color:var(--verde)}
+.kpi-v.azul{color:var(--azul)}
+
+/* FLUJO DE PROCESO */
+.flujo-card{background:#fff;border-radius:12px;border:1px solid var(--borde);padding:14px;margin-bottom:12px}
+.flujo-legend{display:flex;gap:14px;margin-bottom:12px;flex-wrap:wrap}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--txt-s)}
+.leg-dot{width:10px;height:10px;border-radius:50%}
+.leg-dot.rojo{background:var(--rojo)}
+.leg-dot.ambar{background:var(--ambar)}
+.leg-dot.verde{background:var(--verde)}
+.flujo-head{display:grid;grid-template-columns:1fr 90px 70px 90px;gap:6px;font-size:10px;font-weight:600;color:var(--txt-s);padding:0 10px 6px;border-bottom:1px solid var(--borde);margin-bottom:6px}
+.etapa-row{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;margin-bottom:4px;transition:background .15s}
+.etapa-row:hover{background:var(--crema)}
+.etapa-num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;flex-shrink:0}
+.etapa-num.verde{background:var(--verde)}
+.etapa-num.ambar{background:var(--ambar)}
+.etapa-num.rojo{background:var(--rojo)}
+.etapa-info{flex:1;min-width:0}
+.etapa-nombre{font-size:12px;font-weight:600;color:var(--txt)}
+.etapa-sub{font-size:10px;color:var(--txt-s)}
+.etapa-bar-wrap{width:90px;flex-shrink:0}
+.etapa-bar-bg{background:var(--gris);border-radius:4px;height:6px;overflow:hidden}
+.etapa-bar-fill{height:6px;border-radius:4px;transition:width .4s}
+.etapa-bar-pct{font-size:10px;color:var(--txt-s);margin-top:2px;text-align:right}
+.etapa-batch{width:70px;flex-shrink:0;text-align:center;font-size:12px;font-weight:600;color:var(--txt)}
+.etapa-badge{width:90px;flex-shrink:0;text-align:center}
+.badge{display:inline-block;font-size:10px;padding:3px 9px;border-radius:12px;font-weight:600}
+.badge-verde{background:var(--verde);color:#fff}
+.badge-ambar{background:var(--ambar);color:#fff}
+.badge-rojo{background:var(--rojo);color:#fff}
+.etapa-arrow{text-align:center;color:var(--txt-s);font-size:14px;padding:2px 0 2px 16px}
+
+/* INPUTS PESTAÑA 3 */
+.p3-inputs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.motiv-card{background:var(--crema);border:1px solid var(--borde);border-radius:10px;padding:14px;margin-bottom:12px;text-align:center}
+.motiv-icon{font-size:28px;margin-bottom:6px}
+.motiv-title{font-family:'DM Serif Display',serif;font-size:15px;color:var(--cafe);margin-bottom:4px}
+.motiv-texto{font-size:12px;color:var(--txt-s);line-height:1.5}
+.motiv-destaque{font-size:18px;font-weight:700;color:var(--verde);margin:6px 0}
+
+/* BOTÓN GUARDAR */
+.btn-guardar{width:100%;background:var(--cafe);color:var(--crema);border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;letter-spacing:.03em;margin-bottom:14px;transition:background .2s}
+.btn-guardar:hover{background:var(--cafe-mid)}
+.msg-guardado{border-radius:8px;padding:10px 14px;font-size:12px;margin-bottom:12px;display:none}
+.msg-guardado.ok{background:var(--verde-lt);border:1px solid var(--verde);color:var(--verde)}
+.msg-guardado.err{background:var(--rojo-lt);border:1px solid var(--rojo);color:var(--rojo)}
+
+/* HISTORIAL */
+.hist-card{background:#fff;border-radius:12px;border:1px solid var(--borde);padding:14px}
+.hist-empty{font-size:12px;color:var(--txt-s);text-align:center;padding:20px 0}
+table{width:100%;border-collapse:collapse;font-size:11px}
+th{background:var(--cafe);color:#C8860A;padding:7px 8px;text-align:left;font-weight:600;font-size:10px}
+td{padding:7px 8px;border-bottom:1px solid #F0E8DC;color:var(--txt);vertical-align:middle}
+tr:last-child td{border:none}
+tr:nth-child(even) td{background:#FAFAF8}
+
+
+/* AVISOS */
+.hint{font-size:11px;color:var(--txt-s);line-height:1.4}
+.inputs-grid.g2{grid-template-columns:1fr 1fr}
+.field,.inputs-grid>*{min-width:0}
+.field input,.field select{width:100%;min-width:0}
+td.out{white-space:nowrap}
+.aviso{font-size:11px;color:var(--ambar);background:var(--ambar-lt);border:1px solid var(--ambar);border-radius:7px;padding:6px 10px;margin-top:10px}
+
+@media(max-width:480px){
+  .inputs-grid{grid-template-columns:1fr 1fr}
+  .flujo-head{display:none}
+  .etapa-bar-wrap,.etapa-batch{display:none}
+  .kpi-v{font-size:18px}
+  .p3-inputs{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="h-top">
+    <div>
+      <div class="h-empresa" id="h-empresa">NOMBRE DE LA EMPRESA</div>
+      <div class="h-sub" id="h-cite"><a href="https://www.facebook.com/CiteHuallaga" target="_blank">CITEagroindustrial Huallaga</a></div>
+    </div>
+    <span class="h-badge" id="sync-badge">● Sin sincronizar</span>
+    <a href="#" id="btn-produccion" class="btn-dashboard">← Producción</a>
+    <a href="#" id="btn-dashboard-srv" class="btn-dashboard">📊 Dashboard</a>
+  </div>
+  <div class="h-title"><span>ASISTENTE DE SERVICIOS · CAFÉ TOSTADO Y MOLIDO</span></div>
+</header>
+
+<div class="sync-bar">
+  <span id="sync-status">📦 Datos guardados localmente</span>
+  <button class="btn-sync" onclick="intentarSync()">↑ Sincronizar</button>
+</div>
+
+<div class="lote-bar">
+  <span class="lote-id" id="lote-display">—</span>
+  <span class="lote-fecha" id="fecha-display">—</span>
+</div>
+
+<div class="wrap">
+
+  <!-- ETAPAS CONTRATADAS -->
+  <div class="inputs-card">
+    <div class="sec-label">Etapas del proceso que contrata el cliente</div>
+    <div class="hint" style="margin-bottom:10px">Marca un tramo continuo (sin huecos). Encajado y Almacenamiento son opcionales al final de cualquier tramo.</div>
+    <div id="etapas-check"></div>
+    <div class="aviso" id="aviso-tramo" style="display:none;margin-top:10px"></div>
+  </div>
+
+  <div class="inputs-card">
+    <div class="sec-label">Datos del servicio</div>
+    <div class="inputs-grid g2">
+      <div class="field">
+        <label id="lbl-kg-in">Kg que entrega el cliente</label>
+        <input type="number" id="kg_entrada" value="0" min="1" step="1" oninput="recalcular()">
+      </div>
+      <div class="field" id="f-presentacion">
+        <label>Presentación (si incluye envasado)</label>
+        <select id="presentacion" onchange="recalcular()"></select>
+      </div>
+      <div class="field">
+        <label>Horas-hombre por mes (base admin.)</label>
+        <input type="number" id="base_admin_hh" value="96" min="1" step="1" oninput="recalcular()">
+      </div>
+      <div class="field">
+        <label>Utilidad deseada (%)</label>
+        <input type="number" id="utilidad_pct" value="30" min="0" max="200" step="1" oninput="recalcular()">
+      </div>
+    </div>
+    <div class="hint" id="hint-inputs" style="margin-top:10px">—</div>
+  </div>
+
+  <!-- RESULTADOS -->
+  <div class="kpi-grid">
+    <div class="kpi hl">
+      <div class="kpi-l" id="k-kg-lbl">Kg de entrada</div>
+      <div class="kpi-v out" id="k-kg">—</div>
+      <div class="kpi-u" id="k-kg-u">kg del cliente</div>
+    </div>
+    <div class="kpi ok">
+      <div class="kpi-l" id="k-salida-lbl">Kg / unidades de salida</div>
+      <div class="kpi-v verde out" id="k-salida">—</div>
+      <div class="kpi-u" id="k-salida-u">—</div>
+    </div>
+    <div class="kpi info">
+      <div class="kpi-l">Costo total del servicio</div>
+      <div class="kpi-v azul out" id="k-capital">—</div>
+      <div class="kpi-u">capital de trabajo</div>
+    </div>
+    <div class="kpi warn">
+      <div class="kpi-l" id="k-tarifa-lbl">Tarifa por kg de producto</div>
+      <div class="kpi-v out" style="color:var(--ambar)" id="k-tarifa">—</div>
+      <div class="kpi-u">sin IGV</div>
+    </div>
+  </div>
+
+  <!-- FLUJO DE PROCESO -->
+  <div class="flujo-card">
+    <div class="sec-label">Flujo de proceso · solo las etapas contratadas</div>
+    <div class="flujo-legend">
+      <div class="leg-item"><div class="leg-dot rojo"></div>Cuello de botella</div>
+      <div class="leg-item"><div class="leg-dot ambar"></div>Presión alta</div>
+      <div class="leg-item"><div class="leg-dot verde"></div>Fluye bien</div>
+    </div>
+    <div class="flujo-head">
+      <span>Etapa</span>
+      <span>Carga · h-hombre</span>
+      <span>Nro. Batch</span>
+      <span>Estado</span>
+    </div>
+    <div id="flujo-body"><div class="hist-empty">Marca al menos una etapa e ingresa los kg de entrada.</div></div>
+  </div>
+
+  <!-- DESGLOSE ABC -->
+  <div class="flujo-card">
+    <div class="sec-label">Desglose de costos del servicio</div>
+    <table>
+      <tr><th>Componente</th><th>Tipo</th><th>S/</th><th>%</th></tr>
+      <tr><td>Electricidad (equipos usados)</td><td>Variable</td><td class="out" id="abc-elec">—</td><td class="out" id="abc-elec-pct">—</td></tr>
+      <tr><td>Gas (tostadora, si aplica)</td><td>Variable</td><td class="out" id="abc-gas">—</td><td class="out" id="abc-gas-pct">—</td></tr>
+      <tr><td>Depreciación (equipos usados, por día)</td><td>Variable</td><td class="out" id="abc-dep">—</td><td class="out" id="abc-dep-pct">—</td></tr>
+      <tr><td>Mantenimiento (equipos usados, por día)</td><td>Variable</td><td class="out" id="abc-mant">—</td><td class="out" id="abc-mant-pct">—</td></tr>
+      <tr><td>Mano de obra directa</td><td>Variable</td><td class="out" id="abc-mod">—</td><td class="out" id="abc-mod-pct">—</td></tr>
+      <tr><td>Gastos administrativos (según horas-hombre)</td><td>Fijo</td><td class="out" id="abc-admin">—</td><td class="out" id="abc-admin-pct">—</td></tr>
+      <tr><td>Equipos de protección personal (EPP)</td><td>Fijo</td><td class="out" id="abc-epp">—</td><td class="out" id="abc-epp-pct">—</td></tr>
+      <tr style="font-weight:600;background:var(--crema)"><td>TOTAL</td><td></td><td class="out" id="abc-total">—</td><td>100%</td></tr>
+    </table>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="kpi-l">Costos fijos</div>
+      <div class="kpi-v out" id="k-fijo">—</div>
+      <div class="kpi-u out" id="k-fijo-pct">—</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-l">Costos variables</div>
+      <div class="kpi-v out" id="k-var">—</div>
+      <div class="kpi-u out" id="k-var-pct">—</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-l">Horas-hombre</div>
+      <div class="kpi-v out" id="k-hh">—</div>
+      <div class="kpi-u">del servicio</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-l">Días de trabajo</div>
+      <div class="kpi-v out" id="k-dias">—</div>
+      <div class="kpi-u">jornadas</div>
+    </div>
+  </div>
+
+  <!-- PRECIO -->
+  <div class="flujo-card">
+    <div class="sec-label">Precio del servicio</div>
+    <div class="kpi-grid" style="margin-bottom:0">
+      <div class="kpi ok">
+        <div class="kpi-l">Precio de venta (sin IGV)</div>
+        <div class="kpi-v verde out" id="k-precio">—</div>
+        <div class="kpi-u" id="k-precio-u">—</div>
+      </div>
+      <div class="kpi info">
+        <div class="kpi-l">Precio con IGV (18%)</div>
+        <div class="kpi-v azul out" id="k-precio-igv">—</div>
+        <div class="kpi-u">al cliente</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-l">Utilidad en soles</div>
+        <div class="kpi-v out" id="k-utilidad">—</div>
+        <div class="kpi-u">del servicio</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTÓN GUARDAR -->
+  <button class="btn-guardar" onclick="guardarLote()">💾 Guardar Lote</button>
+  <div class="msg-guardado" id="msg-guardado"></div>
+
+  <!-- HISTORIAL -->
+  <div class="hist-card">
+    <div class="sec-label" style="margin-bottom:8px">📂 Historial de lotes</div>
+    <div id="hist-body"><div class="hist-empty">Sin registros guardados.</div></div>
+  </div>
+
+</div><!-- /wrap -->
+
+<script>
+// ══════════════════════════════════════════
+// CONFIG 1/2 — IDENTIDAD DEL CLIENTE (editar por cliente)
+// ══════════════════════════════════════════
+const CFG = {
+  EMPRESA:         'INDUSTRIAS EXPORT ALIMENTOS E.I.R.L.',   // ⚠ tomado del título de la hoja "2. Flujo proceso" del Excel: confirmar
+  MOSTRAR_CITE:    true,                       // franja "CITEagroindustrial Huallaga" en el header
+  APPS_SCRIPT_URL: 'PEGAR_URL_DEPLOY_AQUI',    // URL /exec del Apps Script (misma en dashboard)
+  SYNC_MODE:       'GET',                      // 'GET' (probado en GitHub Pages) | 'POST' (FormData)
+  PRODUCCION_URL:  'asistente_cafe_costos.html',    // ruta relativa o URL completa; '' oculta el botón "← Producción"
+  DASHBOARD_URL:   'dashboard_cafe_costos.html',   // ruta relativa o URL completa; '' oculta el botón "📊 Dashboard"
+  STORAGE_KEY:     'apd_cafe_costos',          // único por cliente/dispositivo
+};
+const STORAGE_KEY = CFG.STORAGE_KEY;
+
+// ══════════════════════════════════════════
+// ══════════════════════════════════════════
+// ══════════════════════════════════════════
+// ══════════════════════════════════════════
+// CONFIG 2/2 — PARÁMETROS DEL SERVICIO POR ETAPAS
+// Fuente: tabla "Costos fijos y variables ... SERVICIOS" del empresario + ficha técnica de equipos.
+// Motor validado contra el lote de 200 kg del Excel (capital ≈ S/895.70 vs S/898.88, 0.35% por redondeo de kg del Excel).
+// ══════════════════════════════════════════
+const KG_BATCH = 13, KG_TOSTADORA_BATCH = 10, HORAS_JORNADA = 8, HP_KW = 0.7457;
+const CAP_TRI = 80, CAP_COL = 100, CAP_TOS = 157.6 / 7.50, CAP_MOL = 80, CAP_ENV = 100;   // kg/h o bolsas/h — envasadora de SERVICIOS: máquina distinta a la de producción (más económica, menor capacidad)
+const TARIFA_KWH = 0.6686, GAS_KG_X_KG_TOSTADO = 0.02, GAS_SOLES_X_KG = 230 / 45;
+const TARIFA_MOD = 11.98;          // S/ por hora-hombre — en servicios SÍ se cobra la mano de obra directa (en producción va en el fijo mensual)
+const EPP_X_PERSONA_DIA = 2.2, PERSONAS_EPP = 2;
+const VIDA_UTIL_ANIOS = 10, MANT_ANUAL_PCT = 0.02, HORAS_MES_DEPMANT = 30;   // dep. y mant. de cada equipo: valor/vida útil/12/30h ó valor×2%/12/30h
+
+function fmtCap(n) { return Number(n).toLocaleString('es-PE', { maximumFractionDigits: 1 }); }
+function dm(valor) { return [valor / VIDA_UTIL_ANIOS / 12 / HORAS_MES_DEPMANT, valor * MANT_ANUAL_PCT / 12 / HORAS_MES_DEPMANT]; }
+const [DEP_TRI, MANT_TRI] = dm(7000), [DEP_COL, MANT_COL] = dm(57000), [DEP_TOS, MANT_TOS] = dm(95000), [DEP_MOL, MANT_MOL] = dm(3000),
+      [DEP_ENV, MANT_ENV] = dm(2280), [DEP_MESA, MANT_MESA] = dm(4800), [DEP_LAB, MANT_LAB] = dm(12000), [DEP_MOV, MANT_MOV] = dm(76000);   // envasadora de servicios: S/2,280 (no S/114,000 de producción)
+
+// Etapas del flujo físico (mismas 8 que producción, mismas capacidades y mermas — ver /mnt/user-data/outputs/asistente_cafe_costos.html).
+// dep_h / mant_h = S/ por HORA de ese equipo (se multiplican por los DÍAS del servicio, no por horas de la etapa — así lo hace el Excel).
+// Mesa inox, Laboratorio y Movilidad se asignan a la etapa donde se usan físicamente (envasado, recepción/control de calidad, almacenamiento):
+// el empresario confirmó que lo que importa es que cada equipo deprecie y se mantenga, no en qué fila exacta del Excel caiga.
+const ETAPAS_SRV = [
+  { id: 'recep', n: '1. Recepción de materia prima', sub: 'Balanza · control de calidad', base: 'perg', tam: KG_BATCH, minMaq: 0, minHom: 4, kw: 0, dep_h: DEP_LAB, mant_h: MANT_LAB, merma: 0 },   // 4 min/batch en servicios (en producción sigue en 12)
+  { id: 'tri',   n: '2. Trillado y clasificado',      sub: `Trilladora · ${fmtCap(CAP_TRI)} kg/h`, base: 'perg', tam: KG_BATCH, minMaq: KG_BATCH / CAP_TRI * 60, minHom: 4, kw: 3 * HP_KW, dep_h: DEP_TRI, mant_h: MANT_TRI, merma: 0.20 },
+  { id: 'col',   n: '3. Clasificado por color',       sub: `Ojo óptico · ${fmtCap(CAP_COL)} kg/h`, base: 'perg', tam: KG_BATCH, minMaq: KG_BATCH / CAP_COL * 60, minHom: 6, kw: 8.7, dep_h: DEP_COL, mant_h: MANT_COL, merma: 0.015 },
+  { id: 'tos',   n: '4. Tostado y control calidad',   sub: `Tostadora · ${fmtCap(CAP_TOS)} kg/h efectivo · gas`, base: 'in', tam: KG_TOSTADORA_BATCH, minMaq: KG_TOSTADORA_BATCH / CAP_TOS * 60, minHom: 10, kw: 3, dep_h: DEP_TOS, mant_h: MANT_TOS, merma: 0.17, gas: true },
+  { id: 'mol',   n: '5. Molienda',                    sub: `Molino · ${fmtCap(CAP_MOL)} kg/h`, base: 'in', tam: KG_BATCH, minMaq: KG_BATCH / CAP_MOL * 60, minHom: 6.27, kw: 3, dep_h: DEP_MOL, mant_h: MANT_MOL, merma: 0.009 },
+  { id: 'env',   n: '6. Envasado y sellado',          sub: `Envasadora y selladora · ${fmtCap(CAP_ENV)} bolsas/h`, base: 'und', tam: 1, minMaq: 1 / CAP_ENV * 60, minHom: 10 / 60, kw: 2.2, dep_h: DEP_ENV + DEP_MESA, mant_h: MANT_ENV + MANT_MESA, merma: 0, bolsas: true },
+  { id: 'enc',   n: '7. Encajado',                    sub: 'Manual · sin máquina', base: 'und', tam: 1, minMaq: 0, minHom: 5 / 60, kw: 0, dep_h: 0, mant_h: 0, merma: 0, bolsas: true },
+  { id: 'alm',   n: '8. Almacenamiento',               sub: 'Movilidad · traslado del producto', base: 'fijo', tam: 1, minMaq: 2, minHom: 0, kw: 0, dep_h: DEP_MOV, mant_h: MANT_MOV, merma: 0 },
+];
+const ORDEN_ETAPAS = ETAPAS_SRV.map(e => e.id);
+
+const ADMIN_SRV = [
+  { n: 'Jefe de planta', monto: 1500 }, { n: 'Marketing digital', monto: 350 }, { n: 'Contador', monto: 50 },
+  { n: 'Tarifa celular', monto: 60 }, { n: 'Alquiler de local', monto: 1250 }, { n: 'Agua del local', monto: 259 },
+  { n: 'Fluido eléctrico', monto: 350 },
+];
+const ADMIN_SRV_MES = ADMIN_SRV.reduce((s, a) => s + a.monto, 0);   // 3 819 — misma planta, gasto único; se reparte por horas-hombre
+
+const PRESENTACIONES = {
+  200:  { bolsa: 0.30, otros: 0.10, estimado: false },
+  250:  { bolsa: 0.35, otros: 0.125, estimado: true },
+  500:  { bolsa: 0.55, otros: 0.25, estimado: true },
+  1000: { bolsa: 0.90, otros: 0.50, estimado: true },
+};
+const PRES_DEFECTO = 200;
+
+let calc = {};
+let etapasMarcadas = new Set();
+
+function num(id, def) { const v = parseFloat(document.getElementById(id).value); return isNaN(v) ? def : v; }
+
+// ══════════════════════════════════════════
+// MOTOR DE CÁLCULO — solo las etapas marcadas, en el ORDEN del flujo físico
+// ══════════════════════════════════════════
+function calcularServicio(p) {
+  const ids = ORDEN_ETAPAS.filter(id => p.etapas.has(id));
+  const etapas = ids.map(id => ETAPAS_SRV.find(e => e.id === id));
+  let k = p.kg, unidades = null;
+  let horas_maq = 0, horas_hom = 0, kwh = 0, costo_gas = 0, costo_mod = 0;
+  const detalle = [];
+  etapas.forEach(e => {
+    let cant, hm, hh;
+    if (e.base === 'fijo') { cant = 1; hm = e.minMaq; hh = 0; }
+    else if (e.base === 'und') { if (unidades === null) unidades = Math.floor(k * 1000 / p.pres); cant = unidades / e.tam; hm = cant * e.minMaq / 60; hh = cant * e.minHom / 60; }
+    else { cant = k / e.tam; hm = cant * e.minMaq / 60; hh = cant * e.minHom / 60; }
+    horas_maq += hm; horas_hom += hh; kwh += e.kw * hh;   // consumo eléctrico va con horas-hombre (confirmado con la ficha del empresario)
+    costo_mod += hh * TARIFA_MOD;
+    if (e.gas) costo_gas += k * GAS_KG_X_KG_TOSTADO * GAS_SOLES_X_KG;
+    const kin = k;
+    if (e.base !== 'fijo' && e.merma > 0) k = k * (1 - e.merma);
+    detalle.push({ ...e, kin, kout: k, cant, hm, hh });
+  });
+  if (unidades === null) unidades = null;   // el servicio no llega a envasado: se cotiza por kg de salida, no por bolsa
+  const costo_elec = kwh * TARIFA_KWH;
+  const dias = horas_hom > 0 ? Math.max(Math.ceil(horas_hom / HORAS_JORNADA), 1) : (etapas.length ? 1 : 0);
+  const costo_dep  = detalle.reduce((s, e) => s + e.dep_h, 0) * dias;    // cada equipo usado deprecia/mantiene por DÍA del servicio (igual que producción)
+  const costo_mant = detalle.reduce((s, e) => s + e.mant_h, 0) * dias;
+  const costo_epp  = dias > 0 ? EPP_X_PERSONA_DIA * Math.round(dias * PERSONAS_EPP) : 0;
+  const costo_admin = ADMIN_SRV_MES * horas_hom / p.baseAdminHH;
+
+  const variable = costo_elec + costo_gas + costo_dep + costo_mant + costo_mod;   // como en la tabla del empresario: todo variable salvo admin. y EPP
+  const fijo = costo_admin + costo_epp;
+  const capital = variable + fijo;
+  const kg_salida = k;
+  // Costo por kg de PRODUCTO ENTREGADO (kg de salida, tras las mermas de las etapas contratadas), no por kg de
+  // entrada: el cliente entrega 100 kg pero recibe menos, y cada etapa adicional pierde peso — dividir entre la
+  // entrada subestimaría el costo de los servicios cortos frente a los que llegan hasta el envasado.
+  const costo_kg = kg_salida > 0 ? capital / kg_salida : 0;
+  const costo_und = unidades > 0 ? capital / unidades : null;
+  const precio_venta = (unidades > 0 ? costo_und : costo_kg) * (1 + p.util / 100) * (1 + p.imp / 100);
+  const precio_igv = precio_venta * 1.18;
+  const utilidad_sol = capital * (p.util / 100);
+  const tarifa_kg = kg_salida > 0 ? capital * (1 + p.util / 100) / kg_salida : 0;   // tarifa por kg de PRODUCTO entregado (no de entrada)
+
+  return {
+    entradas: p, etapas: detalle, horas_maq, horas_hom, dias, kg_salida, unidades,
+    costo_elec, costo_gas, costo_dep, costo_mant, costo_mod, costo_admin, costo_epp,
+    variable, fijo, capital, costo_kg, costo_und, precio_venta, precio_igv, utilidad_sol, tarifa_kg,
+  };
+}
+
+// ══════════════════════════════════════════
+// UI — checkboxes de tramo continuo
+// ══════════════════════════════════════════
+function renderCheckboxes() {
+  const cont = document.getElementById('etapas-check');
+  cont.innerHTML = ETAPAS_SRV.map(e => `
+    <label style="display:flex;align-items:center;gap:8px;padding:7px 4px;border-bottom:1px solid #F0E8DC;font-size:13px;cursor:pointer">
+      <input type="checkbox" data-etapa="${e.id}" onchange="onToggleEtapa('${e.id}')" style="width:18px;height:18px">
+      <span>${e.n}</span><span style="color:var(--txt-s);font-size:11px;margin-left:auto">${e.sub}</span>
+    </label>`).join('');
+}
+
+function onToggleEtapa(id) {
+  const chk = document.querySelector(`[data-etapa="${id}"]`);
+  if (chk.checked) etapasMarcadas.add(id); else etapasMarcadas.delete(id);
+  validarTramo();
+  recalcular();
+}
+
+// Tramo válido: las etapas "de transformación" (todas menos encajado/almacenamiento) deben ser CONTIGUAS en ORDEN_ETAPAS.
+// Encajado y almacenamiento son libres al final (no transforman el producto, solo lo manipulan).
+function validarTramo() {
+  const TRANSF = ORDEN_ETAPAS.filter(id => id !== 'enc' && id !== 'alm');
+  const marcadasTransf = TRANSF.filter(id => etapasMarcadas.has(id));
+  const av = document.getElementById('aviso-tramo');
+  if (marcadasTransf.length === 0) { av.style.display = 'none'; return true; }
+  const idxs = marcadasTransf.map(id => TRANSF.indexOf(id));
+  const hueco = Math.max(...idxs) - Math.min(...idxs) + 1 !== idxs.length;
+  if (hueco) {
+    av.textContent = '⚠ Las etapas marcadas deben ser un tramo continuo (sin saltar etapas de transformación en medio).';
+    av.style.display = '';
+    return false;
+  }
+  av.style.display = 'none';
+  return true;
+}
+
+function leerEntradas() {
+  return {
+    etapas: etapasMarcadas,
+    kg: num('kg_entrada', 0),
+    pres: parseInt(document.getElementById('presentacion').value) || PRES_DEFECTO,
+    baseAdminHH: num('base_admin_hh', 96),
+    util: num('utilidad_pct', 30),
+    imp: 0,
+  };
+}
+
+function recalcular() {
+  const kg = num('kg_entrada', 0);
+  const primeraEtapa = ORDEN_ETAPAS.find(id => etapasMarcadas.has(id));
+  const nombrePrimera = primeraEtapa ? ETAPAS_SRV.find(e => e.id === primeraEtapa).n.replace(/^\d+\.\s*/, '') : null;
+  setText('lbl-kg-in', nombrePrimera ? `Kg que entrega el cliente (entra a "${nombrePrimera}")` : 'Kg que entrega el cliente');
+  if (kg <= 0 || etapasMarcadas.size === 0 || !validarTramo()) { calc = {}; limpiarUI(); return; }
+  calc = calcularServicio(leerEntradas());
+  renderResultados();
+  renderFlujo();
+}
+
+function limpiarUI() {
+  document.querySelectorAll('.out').forEach(el => el.textContent = '—');
+  document.getElementById('flujo-body').innerHTML = '<div class="hist-empty">Marca al menos una etapa e ingresa los kg de entrada.</div>';
+}
+
+function renderResultados() {
+  const c = calc, sf = s => `S/ ${fmt(s)}`;
+  setText('k-kg', fmt(c.entradas.kg, 0));
+  if (c.unidades !== null) {
+    setText('k-salida-lbl', 'Unidades producidas'); setText('k-salida', fmtInt(c.unidades)); setText('k-salida-u', `bolsas de ${c.entradas.pres}g`);
+    setText('k-tarifa-lbl', 'Precio por bolsa (sin IGV)'); setText('k-tarifa', sf(c.precio_venta));
+    setText('k-precio-u', `por bolsa ${c.entradas.pres}g`);
+  } else {
+    setText('k-salida-lbl', 'Kg de salida'); setText('k-salida', fmt(c.kg_salida, 1)); setText('k-salida-u', 'kg tras las etapas contratadas');
+    setText('k-tarifa-lbl', 'Tarifa por kg de PRODUCTO entregado'); setText('k-tarifa', sf(c.tarifa_kg));
+    setText('k-precio-u', 'por kg de producto tras las mermas (no por kg que entregó el cliente)');
+  }
+  setText('k-capital', sf(c.capital));
+  setText('k-precio', sf(c.precio_venta));
+  setText('k-precio-igv', sf(c.precio_igv));
+  setText('k-utilidad', sf(c.utilidad_sol));
+  setText('k-hh', fmt(c.horas_hom));
+  setText('k-dias', c.dias);
+
+  const total = c.capital, pct = v => total > 0 ? fmt(v / total * 100, 1) + '%' : '—';
+  [['elec', c.costo_elec], ['gas', c.costo_gas], ['dep', c.costo_dep], ['mant', c.costo_mant], ['mod', c.costo_mod],
+   ['admin', c.costo_admin], ['epp', c.costo_epp]].forEach(([k, v]) => { setText('abc-' + k, sf(v)); setText('abc-' + k + '-pct', pct(v)); });
+  setText('abc-total', sf(total));
+  setText('k-fijo', sf(c.fijo)); setText('k-fijo-pct', pct(c.fijo) + ' del total');
+  setText('k-var', sf(c.variable)); setText('k-var-pct', pct(c.variable) + ' del total');
+
+  setText('hint-inputs', `Gastos administrativos: S/ ${fmt(ADMIN_SRV_MES)} × ${fmt(c.horas_hom)} h-hombre ÷ ${fmt(c.entradas.baseAdminHH,0)} h-hombre-mes = S/ ${fmt(c.costo_admin)}.`);
+}
+
+function renderFlujo() {
+  const c = calc;
+  const CLS = { verde: 'badge-verde', ambar: 'badge-ambar', rojo: 'badge-rojo' };
+  const TXT = { verde: 'Fluye bien', ambar: 'Presión alta', rojo: 'Cuello botella' };
+  const COLOR = { verde: 'var(--verde)', ambar: 'var(--ambar)', rojo: 'var(--rojo)' };
+  const maxH = Math.max(...c.etapas.map(f => Math.max(f.hm, f.hh)), 0.0001);
+  let html = '';
+  c.etapas.forEach((f, i) => {
+    const carga = Math.max(f.hm, f.hh) / maxH * 100;
+    const base = f.id === 'tos' ? 'ambar' : 'verde';
+    const nivel = carga >= 80 ? 'rojo' : (carga >= 50 && base === 'verde') ? 'ambar' : base;
+    const mov = f.bolsas ? `${fmtInt(c.unidades || 0)} bolsas` : `${fmt(f.kin, 0)} → ${fmt(f.kout, 0)} kg`;
+    const sinTiempo = f.minMaq + f.minHom === 0;
+    const nro = sinTiempo || f.base === 'fijo' ? '—' : f.base === 'und' ? fmtInt(Math.floor(f.cant)) : fmt(f.cant, 2);
+    const hmax = Math.max(f.hm, f.hh);
+    html += `
+    <div class="etapa-row">
+      <div class="etapa-num ${nivel}">${i + 1}</div>
+      <div class="etapa-info">
+        <div class="etapa-nombre">${f.n.replace(/^\d+\.\s*/, '')}</div>
+        <div class="etapa-sub">${f.sub} · ${mov}</div>
+      </div>
+      <div class="etapa-bar-wrap">
+        <div class="etapa-bar-bg"><div class="etapa-bar-fill" style="width:${Math.round(carga)}%;background:${COLOR[nivel]}"></div></div>
+        <div class="etapa-bar-pct">${sinTiempo ? '—' : fmt(hmax, 1) + ' h'}</div>
+      </div>
+      <div class="etapa-batch">${nro}</div>
+      <div class="etapa-badge"><span class="badge ${CLS[nivel]}">${TXT[nivel]}</span></div>
+    </div>`;
+    if (i < c.etapas.length - 1) html += `<div class="etapa-arrow">↓</div>`;
+  });
+  document.getElementById('flujo-body').innerHTML = html;
+}
+
+// ══════════════════════════════════════════
+// LOTE / HISTORIAL / GUARDADO — mismo storage y misma hoja que producción, con tipo='servicio'
+// ══════════════════════════════════════════
+function generarLoteId(reservar = false) {
+  const hoy = new Date();
+  const dd = String(hoy.getDate()).padStart(2, '0'), mm = String(hoy.getMonth() + 1).padStart(2, '0'), yyyy = hoy.getFullYear();
+  const prefijo = `Serv_${dd}${mm}${yyyy}`;
+  const hist = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const mismodia = hist.filter(r => r.lote && r.lote.startsWith(prefijo));
+  const seq = String(mismodia.length + 1).padStart(2, '0');
+  return `${prefijo}${seq}`;
+}
+function formatFecha(d) { return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`; }
+
+function guardarLote() {
+  recalcular();
+  const c = calc;
+  if (!c.entradas || !c.entradas.kg) { mostrarMsg('Marca las etapas e ingresa los kg antes de guardar.', false); return; }
+  const lote_id = generarLoteId();
+  const hoy = new Date(), fecha = formatFecha(hoy);
+  const etapasTxt = ORDEN_ETAPAS.filter(id => c.entradas.etapas.has(id)).join('+');
+  const registro = {
+    lote: lote_id, fecha_proceso: fecha, tipo: 'servicio',
+    cafe_pergamino: c.entradas.kg, precio_cafe: 0, presentacion_gramos: c.entradas.pres,
+    producto_terminado: +c.kg_salida.toFixed(2), unidades_producidas: c.unidades || 0,
+    costo_und_prod: c.unidades ? +c.costo_und.toFixed(4) : +c.costo_kg.toFixed(4),
+    capital_trabajo: +c.capital.toFixed(2), costo_fijo: +c.fijo.toFixed(2), precio_venta_und: +c.precio_venta.toFixed(4),
+    utilidad_soles: +c.utilidad_sol.toFixed(2), horas_maquinas: +c.horas_maq.toFixed(2), horas_hombre: +c.horas_hom.toFixed(2),
+    dias_trabajo: c.dias, gas_soles: +c.costo_gas.toFixed(2), electricidad_soles: +c.costo_elec.toFixed(2),
+    costo_mp: 0, costo_flete: 0, costo_emp: 0,   // el café es del cliente: sin materia prima ni empaques propios
+    costo_dep: +c.costo_dep.toFixed(2), costo_mant: +c.costo_mant.toFixed(2), costo_mod: +c.costo_mod.toFixed(2),
+    costo_admin: +c.costo_admin.toFixed(2), costo_epp: +c.costo_epp.toFixed(2),
+    etapas_contratadas: etapasTxt, sincronizado: false, timestamp: hoy.toISOString(),
+  };
+  const hist = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  hist.unshift(registro);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(hist));
+  document.getElementById('lote-display').textContent = lote_id;
+  document.getElementById('fecha-display').textContent = fecha;
+  mostrarMsg(`✅ Servicio ${lote_id} guardado localmente.`, true);
+  renderHistorial();
+  intentarSync();
+}
+
+async function intentarSync() {
+  const hist = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]').filter(r => r.tipo === 'servicio');
+  const pend = hist.filter(r => !r.sincronizado);
+  if (!CFG.APPS_SCRIPT_URL || CFG.APPS_SCRIPT_URL.includes('PEGAR_URL')) { document.getElementById('sync-status').textContent = '⚙️ Google Sheets no configurado (solo local)'; return; }
+  if (!hist.length) { document.getElementById('sync-status').textContent = '📦 Sin servicios guardados aún'; return; }
+  if (!pend.length) { document.getElementById('sync-status').textContent = '✅ Todo sincronizado'; document.getElementById('sync-badge').textContent = '● Sincronizado'; return; }
+  if (!navigator.onLine) { document.getElementById('sync-status').textContent = `📦 ${pend.length} pendiente(s) — sin internet`; return; }
+  for (const reg of pend) {
+    try {
+      if (CFG.SYNC_MODE === 'GET') {
+        await fetch(`${CFG.APPS_SCRIPT_URL}?action=guardar&data=${encodeURIComponent(JSON.stringify(reg))}`);
+      } else {
+        const fd = new FormData(); fd.append('data', JSON.stringify(reg));
+        await fetch(CFG.APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: fd });
+      }
+      const h = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      const idx = h.findIndex(r => r.lote === reg.lote);
+      if (idx >= 0) { h[idx].sincronizado = true; localStorage.setItem(STORAGE_KEY, JSON.stringify(h)); }
+    } catch (e) { document.getElementById('sync-status').textContent = `⚠️ Error de red`; document.getElementById('sync-badge').textContent = '● Error red'; return; }
+  }
+  renderHistorial();
+  const pendAun = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]').filter(r => !r.sincronizado);
+  if (!pendAun.length) { document.getElementById('sync-status').textContent = '✅ Todo sincronizado'; document.getElementById('sync-badge').textContent = '● Sincronizado'; }
+}
+window.addEventListener('online', intentarSync);
+
+function renderHistorial() {
+  const hist = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]').filter(r => r.tipo === 'servicio');
+  const body = document.getElementById('hist-body');
+  if (!hist.length) { body.innerHTML = '<div class="hist-empty">Sin servicios guardados.</div>'; return; }
+  let html = `<table><tr><th>Lote</th><th>Fecha</th><th>Etapas</th><th>Kg</th><th>Costo</th><th>Estado</th><th></th></tr>`;
+  hist.forEach(r => {
+    const badge = r.sincronizado ? '<span class="badge badge-verde">✓ Sheets</span>' : '<span class="badge badge-ambar">Pendiente</span>';
+    const btn = r.sincronizado ? `<button onclick="eliminarLote('${r.lote}')" style="background:none;border:none;cursor:pointer;font-size:14px;color:var(--rojo)">🗑️</button>` : `<span style="font-size:12px;color:var(--borde)">🔒</span>`;
+    html += `<tr><td style="font-weight:600;font-size:10px">${r.lote}</td><td>${r.fecha_proceso}</td><td style="font-size:9px">${r.etapas_contratadas || ''}</td><td>${r.cafe_pergamino}</td><td>S/ ${fmt(r.capital_trabajo)}</td><td>${badge}</td><td>${btn}</td></tr>`;
+  });
+  html += '</table>';
+  body.innerHTML = html;
+  const pend = hist.filter(r => !r.sincronizado).length;
+  if (pend > 0) { document.getElementById('sync-status').textContent = `📦 ${pend} servicio(s) sin sincronizar`; document.getElementById('sync-badge').textContent = `● ${pend} pendiente(s)`; }
+  else { document.getElementById('sync-status').textContent = '✅ Todo sincronizado'; document.getElementById('sync-badge').textContent = '● Sincronizado'; }
+}
+function eliminarLote(lote_id) {
+  if (!confirm(`¿Eliminar el servicio ${lote_id} del historial local?\nYa está guardado en Google Sheets.`)) return;
+  let hist = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  hist = hist.filter(r => r.lote !== lote_id);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(hist));
+  renderHistorial();
+}
+
+function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+function fmt(n, dec = 2) { if (n === undefined || n === null || isNaN(n)) return '—'; return Number(n).toLocaleString('es-PE', { minimumFractionDigits: dec, maximumFractionDigits: dec }); }
+function fmtInt(n) { if (n === undefined || n === null || isNaN(n)) return '—'; return Number(n).toLocaleString('es-PE'); }
+function mostrarMsg(txt, ok) { const el = document.getElementById('msg-guardado'); el.textContent = txt; el.className = 'msg-guardado ' + (ok ? 'ok' : 'err'); el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 4000); }
+
+(function init() {
+  const hoy = new Date();
+  document.getElementById('lote-display').textContent = generarLoteId();
+  document.getElementById('fecha-display').textContent = formatFecha(hoy);
+  document.getElementById('presentacion').innerHTML = Object.keys(PRESENTACIONES).map(g => `<option value="${g}">${g} gramos${PRESENTACIONES[g].estimado ? ' (est.)' : ''}</option>`).join('');
+  renderCheckboxes();
+  recalcular();
+  renderHistorial();
+  if (CFG.EMPRESA) { const e = document.getElementById('h-empresa'); if (e) e.textContent = CFG.EMPRESA; }
+  if (!CFG.MOSTRAR_CITE) { const c = document.getElementById('h-cite'); if (c) c.style.display = 'none'; }
+  const bp = document.getElementById('btn-produccion');
+  if (CFG.PRODUCCION_URL) bp.href = CFG.PRODUCCION_URL; else bp.style.display = 'none';
+  const bd = document.getElementById('btn-dashboard-srv');
+  if (CFG.DASHBOARD_URL) bd.href = CFG.DASHBOARD_URL; else bd.style.display = 'none';
+  intentarSync();
+})();
+
+</script>
+</body>
+</html>
